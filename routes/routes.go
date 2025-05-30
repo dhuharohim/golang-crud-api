@@ -2,7 +2,7 @@ package routes
 
 import (
     "github.com/gorilla/mux"
-    "github.com/yourusername/crud-template/controllers"
+    "github.com/dhuharohim/golang-crud-api/controllers"
 )
 
 // RegisterRoutes sets up the API routes

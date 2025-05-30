@@ -1,20 +1,29 @@
 package main
 
 import (
-    "log"
-    "net/http"
+	"log"
+	"net/http"
 
-    "github.com/gorilla/mux"
-    "github.com/yourusername/crud-template/database"
-    "github.com/yourusername/crud-template/routes"
+	"github.com/dhuharohim/golang-crud-api/database"
+	"github.com/dhuharohim/golang-crud-api/middleware"
+	"github.com/dhuharohim/golang-crud-api/routes"
+	"github.com/gorilla/mux"
 )
 
 func main() {
-    database.Connect()
+	r := mux.NewRouter()
 
-    router := mux.NewRouter()
-    routes.RegisterRoutes(router)
+	// CORS middleware
+	r.Use(middleware.CORSMiddleware)
 
-    log.Println("Server started at :8080")
-    log.Fatal(http.ListenAndServe(":8080", router))
+	// Connect DB
+	if err := database.Connect(); err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+
+	// Register routes
+	routes.RegisterRoutes(r)
+
+	log.Println("Server started at http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }

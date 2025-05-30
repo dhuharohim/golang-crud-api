@@ -1,20 +1,41 @@
 package database
 
 import (
-    "log"
+	"log"
 
-    "gorm.io/driver/sqlite"
-    "gorm.io/gorm"
+	"github.com/dhuharohim/golang-crud-api/models"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
 
-func Connect() {
+func Connect() error {
     var err error
-    DB, err = gorm.Open(sqlite.Open("data.db"), &gorm.Config{})
+    
+    // Configure GORM logger
+    newLogger := logger.New(
+        log.New(log.Writer(), "\r\n", log.LstdFlags),
+        logger.Config{
+            LogLevel: logger.Info,
+        },
+    )
+
+    // Open database connection
+    DB, err = gorm.Open(sqlite.Open("data.db"), &gorm.Config{
+        Logger: newLogger,
+    })
     if err != nil {
-        log.Fatal("Failed to connect database:", err)
+        return err
     }
 
-    // TODO: Auto-migrate models here
+    // Auto migrate the schema
+    err = DB.AutoMigrate(&models.Book{})
+    if err != nil {
+        return err
+    }
+
+    log.Println("Successfully connected to database")
+    return nil
 }
