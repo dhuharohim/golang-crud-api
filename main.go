@@ -24,6 +24,6 @@ func main() {
 	// Register routes
 	routes.RegisterRoutes(r)
 
-	log.Println("Server started at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Println("Server started at http://localhost:9000")
+	log.Fatal(http.ListenAndServe(":9000", r))
 }
